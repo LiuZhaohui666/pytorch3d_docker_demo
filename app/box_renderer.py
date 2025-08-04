@@ -33,23 +33,53 @@ class BoxRenderer:
         self.img_size = img_size
         self.radius = radius
         self.points_per_pixel = points_per_pixel
-        self.view_names = ["top", "front", "back", "left", "right"]
+        #self.view_names = ["top", "front", "back", "left", "right"]
+        self.view_configs = {
+            "top": (90, 0, (0, 0, -1), 1.0),
+            "top_far": (90, 0, (0, 0, -1), 1.5),
+            "top_close": (90, 0, (0, 0, -1), 0.5),
+            "front": (0, 180, (0, 1, 0), 1.0),
+            "front_high": (30, 180, (0, 1, 0), 1.0),
+            "front_low": (-30, 180, (0, 1, 0), 1.0),
+            "left": (0, 90, (0, 1, 0), 1.0),
+            "right": (0, -90, (0, 1, 0), 1.0),
+            "oblique_45": (45, 45, (0, 1, 0), 1.2),
+            "oblique_135": (45, 135, (0, 1, 0), 1.2),
+        }
         self._init_cameras()
 
+    #def _init_cameras(self):
+     #   elev_azim = {
+      #      "top": (0, 0),
+       #     "front": (90, 0),
+        #    "back": (270, 0),
+         #   "left": (0, 90),
+          #  "right": (0, 270),
+        #}
+
+        #elev = torch.tensor([v[0] for v in elev_azim.values()])
+        #azim = torch.tensor([v[1] for v in elev_azim.values()])
+        #up = [(0, 1, 0) if name not in ["left", "right"] else (0, 0, 1) for name in elev_azim]
+
+        #self.R, self.T = look_at_view_transform(dist=1.0, elev=elev, azim=azim, up=up)
     def _init_cameras(self):
-        elev_azim = {
-            "top": (0, 0),
-            "front": (90, 0),
-            "back": (270, 0),
-            "left": (0, 90),
-            "right": (0, 270),
-        }
+        names = []
+        R_all, T_all = [], []
 
-        elev = torch.tensor([v[0] for v in elev_azim.values()])
-        azim = torch.tensor([v[1] for v in elev_azim.values()])
-        up = [(0, 1, 0) if name not in ["left", "right"] else (0, 0, 1) for name in elev_azim]
+        for name, (elev, azim, up, dist) in self.view_configs.items():
+            R, T = look_at_view_transform(
+                dist=dist,
+                elev=torch.tensor([elev]),
+                azim=torch.tensor([azim]),
+                up=torch.tensor([up], dtype=torch.float)
+            )
+            names.append(name)
+            R_all.append(R)
+            T_all.append(T)
 
-        self.R, self.T = look_at_view_transform(dist=1.0, elev=elev, azim=azim, up=up)
+        self.view_names = names
+        self.R = torch.cat(R_all, dim=0)
+        self.T = torch.cat(T_all, dim=0)
 
     def render_single_view(self, view_idx: int, pointcloud):
         camera = FoVOrthographicCameras(

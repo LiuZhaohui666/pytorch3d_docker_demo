@@ -19,10 +19,10 @@ This project renders `.ply` point clouds from multiple virtual camera angles usi
 
 To **verify that PyTorch3D is correctly installed**, run:
 
-docker run -it --rm \ 
-  -v /Users/zhaohui/Projects/FoundationStereo/250805_vis_demo/output:/workspace/input_clouds \
-  -v /Users/zhaohui/Projects/FoundationStereo/250805_vis_demo/rendered_views:/workspace/rendered_views \
-  -v /Users/zhaohui/Projects/pytorch3d_docker_demo/app:/workspace \
+docker run -it --rm \
+  -v /Users/.../output:/workspace/input_clouds \
+  -v /Users/.../rendered_views:/workspace/rendered_views \
+  -v /Users/.../app:/workspace \
   -w /workspace \
   rvt2-renderer bash
 

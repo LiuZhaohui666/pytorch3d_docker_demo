@@ -33,8 +33,8 @@ def save_image(tensor_img, save_path):
     plt.imsave(save_path, img)
 
 def main():
-    input_root = "/workspace/input_clouds"
-    output_root = "/workspace/rendered_views"
+    input_root = "/input_clouds"
+    output_root = "/rendered_views"
     os.makedirs(output_root, exist_ok=True)
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")

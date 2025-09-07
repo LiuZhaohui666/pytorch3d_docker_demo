@@ -53,7 +53,7 @@ def main():
         pc = pc.to(device)
         feat = feat.to(device)
         pointcloud = Pointclouds(points=[pc], features=[feat])
- c
+ 
         for i, view in enumerate(view_names):
             print(f"[INFO] Rendering view: {view}")
             img = renderer.render_single_view(i, pointcloud)[0]
